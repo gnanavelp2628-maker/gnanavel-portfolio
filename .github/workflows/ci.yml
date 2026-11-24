@@ -1,0 +1,13 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP syntax check
+        run: for f in $(find web/public -name '*.php'); do php -l "$f"; done
+      - name: Python syntax check
+        run: python3 -m py_compile chatbot/server.py
+      - name: Build Docker images
+        run: cp .env.example .env && docker compose build
